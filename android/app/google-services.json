@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "756528492864",
+    "project_id": "vivid-7c650",
+    "storage_bucket": "vivid-7c650.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756528492864:android:b64553325e83524f4acaa5",
+        "android_client_info": {
+          "package_name": "io.github.danredtmf.vivid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756528492864-e7fusg04aimms063fh29k12nqn1blja3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.danredtmf.vivid",
+            "certificate_hash": "41bd327ef81b48770e61a64018b5ca0e0b71aade"
+          }
+        },
+        {
+          "client_id": "756528492864-rc8cvba58nnfacts21l05ebqulb3eecp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJLgtiC58aZwazPfNCtc5UCBCWsNwtvRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756528492864-rc8cvba58nnfacts21l05ebqulb3eecp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

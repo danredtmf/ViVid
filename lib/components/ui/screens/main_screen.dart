@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vivid/components/ui/screens/settings_screen.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -89,7 +92,32 @@ class _MainScreenState extends State<MainScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final User user = await _auth.currentUser;
+                      if (user == null) {
+                        Fluttertoast.showToast(
+                          msg: "No one has signed in",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 18
+                        );
+                        return;
+                      }
+                      await _auth.signOut();
+                      final String uid = user.uid;
+                      Fluttertoast.showToast(
+                        msg: (uid.toString() + ' has successfully signed out.'),
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.yellow,
+                        textColor: Colors.black,
+                        fontSize: 18
+                      );
+                    },
                     child: Text('Logout', style: TextStyle(
                       fontSize: 22, fontFamily: 'BloggerSans',
                       fontWeight: FontWeight.w800, color: Colors.white,

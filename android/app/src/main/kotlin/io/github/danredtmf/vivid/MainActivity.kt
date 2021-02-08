@@ -1,4 +1,4 @@
-package com.example.vivid
+package io.github.danredtmf.vivid
 
 import android.os.Build
 import android.os.Bundle
