@@ -1,8 +1,50 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vivid/components/ui/screens/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  LoginScreen({Key key}) : super(key: key);
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _login() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text
+      );
+      setState(() {
+        Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
+        _saveRoute();
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+  }
+
+  void _saveRoute() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String route = '/main';
+    await prefs.setString('save_route', route);
+    print('Route save!');
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +68,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextField(
+                  controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Email',
@@ -41,6 +84,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 5),
                 TextField(
+                  controller: _passwordController,
                   keyboardType: TextInputType.text,
                   obscureText: true,
                   maxLengthEnforced: true,
@@ -60,11 +104,8 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(height: 10),
                 FlatButton(
                   color: Colors.blueAccent,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainScreen()),
-                    );
+                  onPressed: () async {
+                    _login();
                   },
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 10),

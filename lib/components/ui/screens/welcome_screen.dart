@@ -1,13 +1,32 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vivid/components/ui/screens/login_screen.dart';
-import 'package:vivid/components/ui/screens/sign_up_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key key}) : super(key: key);
 
+  _checkUserAndRoute(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String saveRoute = prefs.getString('save_route');
+    
+    FirebaseAuth.instance
+    .authStateChanges()
+    .listen((User user) {
+      if (user == null) {
+        print('User is currently signed out!');
+        //Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (route) => false);
+      } else {
+        print('User is signed in!');
+        if (saveRoute != null) {
+          Navigator.of(context).pushNamedAndRemoveUntil(saveRoute, (route) => false);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    _checkUserAndRoute(context);
     return Scaffold(
       body: Container(
         child: Center(
@@ -29,10 +48,11 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(height: 10),
                 FlatButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.of(context).pushNamed('/sign_up');
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SignUpScreen()),
-                    );
+                    );*/
                   },
                   child: Text(
                     'Sign Up',
@@ -48,10 +68,11 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 FlatButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.of(context).pushNamed('/login');
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
+                    );*/
                   },
                   child: Text(
                     'Login',
@@ -66,7 +87,7 @@ class WelcomeScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 10),
                 ),
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {}, // TODOGoogle login support
                   child: Text(
                     'Sign In with Google',
                     style: TextStyle(

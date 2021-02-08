@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,13 +7,46 @@ import 'package:vivid/components/ui/screens/settings_screen.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class MainScreen extends StatefulWidget {
+  final users = FirebaseFirestore.instance.collection('users');
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  String nickname = '', firstName = '', lastName = '';
   bool isHideDrawerButtons = false;
   IconData hideDrawerButton = Icons.arrow_drop_down;
+
+  _getData() async {
+    var firebaseUser = _auth.currentUser;
+    final DocumentSnapshot doc = await widget.users.doc(firebaseUser.uid).get();
+    print(doc.data());
+    nickname = doc.data()['nickname'].toString();
+    firstName = doc.data()['first_name'].toString();
+    lastName = doc.data()['last_name'].toString().isEmpty ? ' ' : doc.data()['last_name'].toString();
+  }
+
+  _checkUserAndRoute(BuildContext context) async {
+    FirebaseAuth.instance
+    .authStateChanges()
+    .listen((User user) {
+      if (user == null) {
+        print('User is currently signed out!');
+        Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (route) => false);
+      } else {
+        print('User is signed in!');
+        _getData();
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserAndRoute(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +59,7 @@ class _MainScreenState extends State<MainScreen> {
           FlatButton(
             minWidth: 10,
             onPressed: () {
+              _getData();
               Fluttertoast.showToast(
                 msg: "Doesn't work yet",
                 toastLength: Toast.LENGTH_SHORT,
@@ -55,11 +90,11 @@ class _MainScreenState extends State<MainScreen> {
                     child: Icon(Icons.person, size: 30),
                   ),
                   SizedBox(height: 10),
-                  Text('Nickname', style: TextStyle(
+                  Text(lastName.isEmpty ? firstName : firstName + ' ' + lastName, style: TextStyle(
                     fontSize: 22, color: Colors.white,
                     fontFamily: 'BloggerSans', fontWeight: FontWeight.w800
                   ), softWrap: false),
-                  Text('email@mail.ru', style: TextStyle(
+                  Text(nickname, style: TextStyle(
                     fontSize: 16, color: Colors.white,
                     fontFamily: 'BloggerSans'
                   ), softWrap: false),
@@ -104,6 +139,7 @@ class _MainScreenState extends State<MainScreen> {
                           textColor: Colors.white,
                           fontSize: 18
                         );
+                        setState(() {});
                         return;
                       }
                       await _auth.signOut();
@@ -117,6 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                         textColor: Colors.black,
                         fontSize: 18
                       );
+                      setState(() {});
                     },
                     child: Text('Logout', style: TextStyle(
                       fontSize: 22, fontFamily: 'BloggerSans',
