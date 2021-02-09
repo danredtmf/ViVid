@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,12 +16,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
       setState(() {
-        Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/main', (route) => false);
         _saveRoute();
       });
     } on FirebaseAuthException catch (e) {
@@ -60,10 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   'Login',
                   style: TextStyle(
-                    fontSize: 30,
-                    fontFamily: 'BloggerSans',
-                    fontWeight: FontWeight.w800
-                  ),
+                      fontSize: 30,
+                      fontFamily: 'BloggerSans',
+                      fontWeight: FontWeight.w800),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10),
@@ -73,13 +73,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: 'Email',
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent),
-                      borderRadius: BorderRadius.all(Radius.circular(5))
-                    ),
+                        borderSide: BorderSide(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-                      borderRadius: BorderRadius.all(Radius.circular(5))
-                    ),
+                        borderSide:
+                            BorderSide(color: Colors.blueAccent, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
                   ),
                 ),
                 SizedBox(height: 5),
@@ -92,13 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: 'Password',
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent),
-                      borderRadius: BorderRadius.all(Radius.circular(5))
-                    ),
+                        borderSide: BorderSide(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-                      borderRadius: BorderRadius.all(Radius.circular(5))
-                    ),
+                        borderSide:
+                            BorderSide(color: Colors.blueAccent, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -109,10 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
-                    child: Text('Login', style: TextStyle(
-                      fontSize: 24, fontFamily: 'BloggerSans',
-                      fontWeight: FontWeight.w800, color: Colors.white
-                    ),),
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontFamily: 'BloggerSans',
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white),
+                    ),
                   ),
                 )
               ],

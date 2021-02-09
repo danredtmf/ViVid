@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:vivid/components/ui/screens/settings_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -14,7 +13,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String nickname = '', firstName = '', lastName = '';
+  String nickname = '', name = '';
   bool isHideDrawerButtons = false;
   IconData hideDrawerButton = Icons.arrow_drop_down;
 
@@ -23,65 +22,44 @@ class _MainScreenState extends State<MainScreen> {
     final DocumentSnapshot doc = await widget.users.doc(firebaseUser.uid).get();
     print(doc.data());
     nickname = doc.data()['nickname'].toString();
-    firstName = doc.data()['first_name'].toString();
-    lastName = doc.data()['last_name'].toString().isEmpty ? ' ' : doc.data()['last_name'].toString();
-  }
-
-  _checkUserAndRoute(BuildContext context) async {
-    FirebaseAuth.instance
-    .authStateChanges()
-    .listen((User user) {
-      if (user == null) {
-        print('User is currently signed out!');
-        Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (route) => false);
-      } else {
-        print('User is signed in!');
-        _getData();
-        setState(() {});
-      }
-    });
+    name = doc.data()['name'].toString();
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    _checkUserAndRoute(context);
+    _getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ViVid'),
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
-        actions: [
-          FlatButton(
-            minWidth: 10,
-            onPressed: () {
-              _getData();
-              Fluttertoast.showToast(
-                msg: "Doesn't work yet",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.yellow,
-                textColor: Colors.black,
-                fontSize: 18
-              );
-            },
-            child: Icon(Icons.search, color: Colors.white)
-          ),
-        ]
-      ),
+          title: Text('ViVid'),
+          backgroundColor: Colors.blueAccent,
+          elevation: 0,
+          actions: [
+            FlatButton(
+                minWidth: 10,
+                onPressed: () {
+                  Fluttertoast.showToast(
+                      msg: "Doesn't work yet",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.yellow,
+                      textColor: Colors.black,
+                      fontSize: 18);
+                },
+                child: Icon(Icons.search, color: Colors.white)),
+          ]),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blueAccent
-              ),
+              decoration: BoxDecoration(color: Colors.blueAccent),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -90,14 +68,19 @@ class _MainScreenState extends State<MainScreen> {
                     child: Icon(Icons.person, size: 30),
                   ),
                   SizedBox(height: 10),
-                  Text(lastName.isEmpty ? firstName : firstName + ' ' + lastName, style: TextStyle(
-                    fontSize: 22, color: Colors.white,
-                    fontFamily: 'BloggerSans', fontWeight: FontWeight.w800
-                  ), softWrap: false),
-                  Text(nickname, style: TextStyle(
-                    fontSize: 16, color: Colors.white,
-                    fontFamily: 'BloggerSans'
-                  ), softWrap: false),
+                  Text(name,
+                      style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.white,
+                          fontFamily: 'BloggerSans',
+                          fontWeight: FontWeight.w800),
+                      softWrap: false),
+                  Text(nickname,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontFamily: 'BloggerSans'),
+                      softWrap: false),
                   Container(
                     padding: const EdgeInsets.only(left: 250),
                     child: GestureDetector(
@@ -120,67 +103,67 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            isHideDrawerButtons 
-            ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: () async {
-                      final User user = await _auth.currentUser;
-                      if (user == null) {
-                        Fluttertoast.showToast(
-                          msg: "No one has signed in",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 18
-                        );
-                        setState(() {});
-                        return;
-                      }
-                      await _auth.signOut();
-                      final String uid = user.uid;
-                      Fluttertoast.showToast(
-                        msg: (uid.toString() + ' has successfully signed out.'),
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.yellow,
-                        textColor: Colors.black,
-                        fontSize: 18
-                      );
-                      setState(() {});
-                    },
-                    child: Text('Logout', style: TextStyle(
-                      fontSize: 22, fontFamily: 'BloggerSans',
-                      fontWeight: FontWeight.w800, color: Colors.white,
-                    )),
-                    color: Colors.blue,
+            isHideDrawerButtons
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          FlatButton(
+                            onPressed: () async {
+                              final User user = await _auth.currentUser;
+                              if (user == null) {
+                                Fluttertoast.showToast(
+                                    msg: "No one has signed in",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 18);
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/welcome', (route) => false);
+                              }
+                              await _auth.signOut();
+                              Fluttertoast.showToast(
+                                  msg: (nickname +
+                                      ' has successfully signed out.'),
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.yellow,
+                                  textColor: Colors.black,
+                                  fontSize: 18);
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/welcome', (route) => false);
+                            },
+                            child: Text('Logout',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: 'BloggerSans',
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                )),
+                            color: Colors.blue,
+                          )
+                        ]),
                   )
-                ]
-              ),
-            ) 
-            : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsScreen()),
-                    );
-                  },
-                  child: Text('Settings', style: TextStyle(
-                    fontSize: 22, fontFamily: 'BloggerSans',
-                    color: Colors.grey[800], fontWeight: FontWeight.w800
-                  )),
-                ),
-              ],
-            )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/settings');
+                        },
+                        child: Text('Settings',
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontFamily: 'BloggerSans',
+                                color: Colors.grey[800],
+                                fontWeight: FontWeight.w800)),
+                      ),
+                    ],
+                  )
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vivid/components/auth/android_auth_provider.dart';
+import 'package:vivid/components/ui/screens/edit_name.dart';
 import 'package:vivid/components/ui/screens/edit_nickname.dart';
 import 'package:vivid/components/ui/screens/enter_nickname.dart';
 import 'package:vivid/components/ui/screens/login_screen.dart';
@@ -14,14 +15,14 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent, // navigation bar color
     statusBarColor: Colors.black12, // status bar color
-    statusBarBrightness: Brightness.dark,//status bar brigtness
-    statusBarIconBrightness:Brightness.dark, //status barIcon Brightness
-    systemNavigationBarDividerColor: Colors.greenAccent,//Navigation bar divider color
-    systemNavigationBarIconBrightness: Brightness.light, //navigation bar icon 
+    statusBarBrightness: Brightness.dark, //status bar brigtness
+    statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
+    systemNavigationBarDividerColor:
+        Colors.greenAccent, //Navigation bar divider color
+    systemNavigationBarIconBrightness: Brightness.light, //navigation bar icon
   ));
   await AuthProvider().initialize();
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -29,17 +30,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ViVid',
       debugShowCheckedModeBanner: false,
-      routes: <String, WidgetBuilder> {
-        '/welcome':(BuildContext context) => new WelcomeScreen(),
-        '/sign_up':(BuildContext context) => new SignUpScreen(),
-        '/login':(BuildContext context) => new LoginScreen(),
-        '/enter_nickname':(BuildContext context) => new EnterNicknameScreen(),
-        '/main':(BuildContext context) => new MainScreen(),
-        '/settings':(BuildContext context) => new SettingsScreen(),
-        '/edit_nickname':(BuildContext context) => new EditNicknameScreen(),
+      routes: <String, WidgetBuilder>{
+        '/welcome': (BuildContext context) => new WelcomeScreen(),
+        '/sign_up': (BuildContext context) => new SignUpScreen(),
+        '/login': (BuildContext context) => new LoginScreen(),
+        '/enter_nickname': (BuildContext context) => new EnterNicknameScreen(),
+        '/main': (BuildContext context) => new MainScreen(),
+        '/settings': (BuildContext context) => new SettingsScreen(),
+        '/edit_nickname': (BuildContext context) => new EditNicknameScreen(),
+        '/edit_name': (BuildContext context) => new EditNameScreen(),
       },
       home: WelcomeScreen(),
     );
   }
 }
-
