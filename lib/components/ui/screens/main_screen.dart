@@ -19,11 +19,17 @@ class _MainScreenState extends State<MainScreen> {
 
   _getData() async {
     var firebaseUser = _auth.currentUser;
-    final DocumentSnapshot doc = await widget.users.doc(firebaseUser.uid).get();
-    print(doc.data());
-    nickname = doc.data()['nickname'].toString();
-    name = doc.data()['name'].toString();
-    setState(() {});
+    DocumentSnapshot doc;
+    try {
+      doc = await widget.users.doc(firebaseUser.uid).get();
+      nickname = doc.data()['nickname'].toString();
+      name = doc.data()['name'].toString();
+      setState(() {});
+    } on NoSuchMethodError catch (e) {
+      print(e);
+      Navigator.of(context)
+        .pushNamedAndRemoveUntil('/enter_nickname', (route) => false);
+    }
   }
 
   @override
@@ -36,24 +42,24 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('ViVid'),
-          backgroundColor: Colors.blueAccent,
-          elevation: 0,
-          actions: [
-            FlatButton(
-                minWidth: 10,
-                onPressed: () {
-                  Fluttertoast.showToast(
-                      msg: "Doesn't work yet",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.yellow,
-                      textColor: Colors.black,
-                      fontSize: 18);
-                },
-                child: Icon(Icons.search, color: Colors.white)),
-          ]),
+        title: Text('ViVid'),
+        backgroundColor: Colors.blueAccent,
+        elevation: 0,
+        actions: [
+          FlatButton(
+            minWidth: 10,
+            onPressed: () {
+              Fluttertoast.showToast(
+                msg: "Doesn't work yet",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.yellow,
+                textColor: Colors.black,
+                fontSize: 18);
+            },
+            child: Icon(Icons.search, color: Colors.white)),
+        ]),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -69,18 +75,18 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   SizedBox(height: 10),
                   Text(name,
-                      style: TextStyle(
-                          fontSize: 22,
-                          color: Colors.white,
-                          fontFamily: 'BloggerSans',
-                          fontWeight: FontWeight.w800),
-                      softWrap: false),
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.white,
+                      fontFamily: 'BloggerSans',
+                      fontWeight: FontWeight.w800),
+                    softWrap: false),
                   Text(nickname,
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontFamily: 'BloggerSans'),
-                      softWrap: false),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: 'BloggerSans'),
+                    softWrap: false),
                   Container(
                     padding: const EdgeInsets.only(left: 250),
                     child: GestureDetector(
@@ -107,46 +113,46 @@ class _MainScreenState extends State<MainScreen> {
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          FlatButton(
-                            onPressed: () async {
-                              final User user = await _auth.currentUser;
-                              if (user == null) {
-                                Fluttertoast.showToast(
-                                    msg: "No one has signed in",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.red,
-                                    textColor: Colors.white,
-                                    fontSize: 18);
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    '/welcome', (route) => false);
-                              }
-                              await _auth.signOut();
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () async {
+                            final User user = _auth.currentUser; // здесь был await
+                            if (user == null) {
                               Fluttertoast.showToast(
-                                  msg: (nickname +
-                                      ' has successfully signed out.'),
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.yellow,
-                                  textColor: Colors.black,
-                                  fontSize: 18);
+                                msg: "No one has signed in",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 18);
                               Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/welcome', (route) => false);
-                            },
-                            child: Text('Logout',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontFamily: 'BloggerSans',
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                )),
-                            color: Colors.blue,
-                          )
-                        ]),
+                                '/welcome', (route) => false);
+                            }
+                            await _auth.signOut();
+                            Fluttertoast.showToast(
+                              msg: (nickname +
+                                  ' has successfully signed out.'),
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.yellow,
+                              textColor: Colors.black,
+                              fontSize: 18);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/welcome', (route) => false);
+                          },
+                          child: Text('Logout',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'BloggerSans',
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            )),
+                          color: Colors.blue,
+                        )
+                      ]),
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -156,14 +162,14 @@ class _MainScreenState extends State<MainScreen> {
                           Navigator.of(context).pushNamed('/settings');
                         },
                         child: Text('Settings',
-                            style: TextStyle(
-                                fontSize: 22,
-                                fontFamily: 'BloggerSans',
-                                color: Colors.grey[800],
-                                fontWeight: FontWeight.w800)),
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontFamily: 'BloggerSans',
+                            color: Colors.grey[800],
+                            fontWeight: FontWeight.w800)),
                       ),
                     ],
-                  )
+                )
           ],
         ),
       ),
