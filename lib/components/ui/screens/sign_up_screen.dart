@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   SignUpScreen({Key key}) : super(key: key);
@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         setState(() {
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/enter_nickname', (route) => false);
-          _saveRoute();
+          //_saveRoute();
         });
         Fluttertoast.showToast(
             msg: "Registration completed",
@@ -43,8 +43,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
+          Fluttertoast.showToast(
+            msg: "The password is too weak.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 18);
         } else if (e.code == 'email-already-in-use') {
           print('The account already exists for that email.');
+          Fluttertoast.showToast(
+            msg: "The account already exists for that email.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 18);
         }
       } catch (e) {
         print(e);
@@ -71,12 +87,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  _saveRoute() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String route = '/enter_nickname';
-    await prefs.setString('save_route', route);
-    print('Route save!');
-  }
+  //_saveRoute() async {
+  //  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //  String route = '/enter_nickname';
+  //  await prefs.setString('save_route', route);
+  //  print('Route save!');
+  //}
 
   @override
   void initState() {
@@ -151,10 +167,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: Colors.blueAccent,
                       onPressed: () async {
                         _register();
-                        /*Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => EnterNicknameScreen()),
-                        );*/
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 10),
@@ -174,6 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 10),
             Text("""Password complexity:
+    - minimum 8 characters
     - should contain at least one upper case
     - should contain at least one lower case
     - should contain at least one digit

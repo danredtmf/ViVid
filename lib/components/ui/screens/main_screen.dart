@@ -29,6 +29,8 @@ class _MainScreenState extends State<MainScreen> {
       print(e);
       Navigator.of(context)
         .pushNamedAndRemoveUntil('/enter_nickname', (route) => false);
+    } on FlutterError catch(e) {
+      print("FlutterError: "+e.toString());
     }
   }
 

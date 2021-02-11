@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         Navigator.of(context)
           .pushNamedAndRemoveUntil('/main', (route) => false);
-          _saveRoute();
+          //_saveRoute();
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -51,12 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _saveRoute() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String route = '/main';
-    await prefs.setString('save_route', route);
-    print('Route save!');
-  }
+  //void _saveRoute() async {
+  //  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //  String route = '/main';
+  //  await prefs.setString('save_route', route);
+  //  print('Route save!');
+  //}
 
   @override
   void dispose() {

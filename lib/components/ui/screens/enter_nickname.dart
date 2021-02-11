@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterNicknameScreen extends StatefulWidget {
   EnterNicknameScreen({Key key}) : super(key: key);
@@ -20,7 +20,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
   void _checkOrEnterNickname() async {
     _nicknameController.text = _nicknameController.text.toLowerCase();
     bool nicknameValid =
-        RegExp(r'^[a-z0-9_].{5,32}').hasMatch(_nicknameController.text);
+        RegExp(r'^[a-z0-9_].{4,32}').hasMatch(_nicknameController.text);
 
     if (nicknameValid) {
       print(_nicknameController.text.toString() +
@@ -29,7 +29,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
       if (_nameController.text.isNotEmpty) {
         print(_nameController.text.isNotEmpty.toString());
         _createUser();
-        _saveRoute();
+        //_saveRoute();
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/main', (route) => false);
       } else {
@@ -67,15 +67,15 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
-    _saveRoute();
+    //_saveRoute();
   }
 
-  _saveRoute() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String route = '/main';
-    await prefs.setString('save_route', route);
-    print('Route save!');
-  }
+  //_saveRoute() async {
+  //  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //  String route = '/main';
+  //  await prefs.setString('save_route', route);
+  //  print('Route save!');
+  //}
 
   @override
   void initState() {
@@ -94,10 +94,6 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
               minWidth: 10,
               onPressed: () {
                 _checkOrEnterNickname();
-                /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-              );*/
               },
               child: Icon(Icons.check)),
         ],
@@ -135,7 +131,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
                 ),
                 Text("""Nickname requirements:
     - a-z, 0-9, and underscore ( _ ) are allowed
-    - minimum 5 characters""",
+    - minimum 4 characters""",
                     style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans')),
                 SizedBox(height: 10),
                 Text('Enter Name',
