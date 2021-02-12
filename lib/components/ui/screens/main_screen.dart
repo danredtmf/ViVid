@@ -17,15 +17,16 @@ class _MainScreenState extends State<MainScreen> {
   bool isHideDrawerButtons = false;
   IconData hideDrawerButton = Icons.arrow_drop_down;
 
-  _getData() async {
+  _getData(BuildContext context) async {
     var firebaseUser = _auth.currentUser;
     DocumentSnapshot doc;
+
     try {
       doc = await widget.users.doc(firebaseUser.uid).get();
       nickname = doc.data()['nickname'].toString();
       name = doc.data()['name'].toString();
       setState(() {});
-    } on NoSuchMethodError catch (e) {
+    } on NoSuchMethodError catch(e) {
       print(e);
       Navigator.of(context)
         .pushNamedAndRemoveUntil('/enter_nickname', (route) => false);
@@ -36,8 +37,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+    _getData(context);
     super.initState();
-    _getData();
   }
 
   @override

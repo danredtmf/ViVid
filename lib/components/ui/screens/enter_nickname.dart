@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterNicknameScreen extends StatefulWidget {
   EnterNicknameScreen({Key key}) : super(key: key);
@@ -29,7 +28,6 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
       if (_nameController.text.isNotEmpty) {
         print(_nameController.text.isNotEmpty.toString());
         _createUser();
-        //_saveRoute();
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/main', (route) => false);
       } else {
@@ -67,15 +65,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
-    //_saveRoute();
   }
-
-  //_saveRoute() async {
-  //  SharedPreferences prefs = await SharedPreferences.getInstance();
-  //  String route = '/main';
-  //  await prefs.setString('save_route', route);
-  //  print('Route save!');
-  //}
 
   @override
   void initState() {
@@ -101,7 +91,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
       body: Container(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,

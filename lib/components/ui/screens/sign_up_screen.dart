@@ -1,7 +1,9 @@
+import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class SignUpScreen extends StatefulWidget {
   SignUpScreen({Key key}) : super(key: key);
@@ -12,7 +14,9 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool otpIsValid = false;
 
   void _register() async {
     bool emailValid = RegExp(
@@ -23,15 +27,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .hasMatch(_passwordController.text);
     if (emailValid & passwordValid) {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: _emailController.text,
-                password: _passwordController.text);
-        setState(() {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('/enter_nickname', (route) => false);
-          //_saveRoute();
-        });
+        if (otpIsValid) {
+          UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text).then((_) {
+              Navigator.of(context)
+              .pushNamedAndRemoveUntil('/main', (route) => false);
+            });
         Fluttertoast.showToast(
             msg: "Registration completed",
             toastLength: Toast.LENGTH_SHORT,
@@ -40,6 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 18);
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
@@ -87,12 +91,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  //_saveRoute() async {
-  //  SharedPreferences prefs = await SharedPreferences.getInstance();
-  //  String route = '/enter_nickname';
-  //  await prefs.setString('save_route', route);
-  //  print('Route save!');
-  //}
+  void sendOTP() async {
+    EmailAuth.sessionName = "ViVid";
+    var res = await EmailAuth.sendOtp(receiverMail: _emailController.text);
+    if (res) {
+      print("OTP Sent");
+      Fluttertoast.showToast(
+        msg: "OTP code sent to the mail",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.yellow,
+        textColor: Colors.black,
+        fontSize: 18);
+    } else {
+      print("We could not sent the OTP");
+      Fluttertoast.showToast(
+        msg: "We could not sent the OTP",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 18);
+    }
+  }
+
+  void verifyOTP() async {
+    var res = EmailAuth.validate(receiverMail: _emailController.text, userOTP: _otpController.text);
+    if (res) {
+      print("OTP Verified");
+      Fluttertoast.showToast(
+        msg: "OTP Verified",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 18);
+        otpIsValid = true;
+    } else {
+      print("Invalid OTP");
+      Fluttertoast.showToast(
+        msg: "Invalid OTP",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 18);
+    }
+  }
 
   @override
   void initState() {
@@ -101,6 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
+    otpIsValid = false;
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -110,13 +160,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: 100),
+        margin: EdgeInsets.only(top: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 80),
+                margin: EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,8 +183,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Email',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blueAccent),
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blueAccent, width: 2),
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        suffixIcon: TextButton(
+                          child: Text('Send OTP'),
+                          onPressed: () => sendOTP(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    TextField(
+                      controller: _otpController,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      maxLengthEnforced: true,
+                      decoration: InputDecoration(
+                        hintText: 'Verify Code',
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.blueAccent),
                             borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -165,7 +236,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 10),
                     FlatButton(
                       color: Colors.blueAccent,
-                      onPressed: () async {
+                      onPressed: () {
+                        verifyOTP();
                         _register();
                       },
                       child: Container(
