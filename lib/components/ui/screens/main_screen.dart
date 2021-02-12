@@ -154,7 +154,18 @@ class _MainScreenState extends State<MainScreen> {
                               color: Colors.white,
                             )),
                           color: Colors.blue,
-                        )
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/settings');
+                          },
+                          child: Text('Settings',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'BloggerSans',
+                              color: Colors.grey[800],
+                              fontWeight: FontWeight.w800)),
+                        ),
                       ]),
                   )
                 : Column(

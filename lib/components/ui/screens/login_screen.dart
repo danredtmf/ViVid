@@ -19,8 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() async {
     try {
       if (otpIsValid) {
+        // ignore: unused_local_variable
         UserCredential userCredential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(
+          // ignore: missing_return
           email: _emailController.text, password: _passwordController.text).then((_) {
             Navigator.of(context)
             .pushNamedAndRemoveUntil('/main', (route) => false);
@@ -127,9 +129,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   'Login',
                   style: TextStyle(
-                      fontSize: 30,
-                      fontFamily: 'BloggerSans',
-                      fontWeight: FontWeight.w800),
+                    fontSize: 30,
+                    fontFamily: 'BloggerSans',
+                    fontWeight: FontWeight.w800,
+                    color: Colors.grey[800]
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10),
@@ -139,14 +143,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: 'Email',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blueAccent),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
                     focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.blueAccent, width: 2),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderSide:
+                        BorderSide(color: Colors.blueAccent, width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
                     suffixIcon: TextButton(
-                      child: Text('Send OTP'),
+                      child: Text('Send OTP', style: TextStyle(
+                        fontSize: 14, fontFamily: 'BloggerSans',
+                        fontWeight: FontWeight.w800, color: Colors.blueAccent
+                      )),
                       onPressed: () => sendOTP(),
                     )
                   ),
@@ -160,12 +167,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: 'Verify Code',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blueAccent),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
                     focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.blueAccent, width: 2),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderSide:
+                        BorderSide(color: Colors.blueAccent, width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
                   ),
                 ),
                 SizedBox(height: 5),
@@ -178,12 +185,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: 'Password',
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blueAccent),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
                     focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.blueAccent, width: 2),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderSide:
+                        BorderSide(color: Colors.blueAccent, width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -198,10 +205,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       'Login',
                       style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'BloggerSans',
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white),
+                        fontSize: 24,
+                        fontFamily: 'BloggerSans',
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white),
                     ),
                   ),
                 )

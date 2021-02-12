@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-
 class SignUpScreen extends StatefulWidget {
   SignUpScreen({Key key}) : super(key: key);
 
@@ -20,22 +18,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _register() async {
     bool emailValid = RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(_emailController.text);
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      .hasMatch(_emailController.text);
     bool passwordValid = RegExp(
-            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[()!@#\$&*~]).{8,}$')
-        .hasMatch(_passwordController.text);
+      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[()!@#\$&*~]).{8,}$')
+      .hasMatch(_passwordController.text);
     if (emailValid & passwordValid) {
       try {
         if (otpIsValid) {
+          // ignore: unused_local_variable
           UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
             email: _emailController.text,
+            // ignore: missing_return
             password: _passwordController.text).then((_) {
               Navigator.of(context)
               .pushNamedAndRemoveUntil('/main', (route) => false);
             });
-        Fluttertoast.showToast(
+          Fluttertoast.showToast(
             msg: "Registration completed",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -71,23 +71,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } else if (!emailValid) {
       Fluttertoast.showToast(
-          msg:
-              "It looks like you didn't enter your email or you entered it incorrectly",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 18);
+        msg:
+          "It looks like you didn't enter your email or you entered it incorrectly",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 18);
     } else if (!passwordValid) {
       Fluttertoast.showToast(
-          msg: "Password doesn't match",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 18);
+        msg: "Password doesn't match",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 18);
     }
   }
 
@@ -174,9 +174,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Text(
                       'Sign Up',
                       style: TextStyle(
-                          fontSize: 30,
-                          fontFamily: 'BloggerSans',
-                          fontWeight: FontWeight.w800),
+                        fontSize: 30,
+                        fontFamily: 'BloggerSans',
+                        fontWeight: FontWeight.w800,
+                        color: Colors.grey[800]
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10),
@@ -186,14 +188,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       decoration: InputDecoration(
                         hintText: 'Email',
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blueAccent),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          borderSide: BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blueAccent, width: 2),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          borderSide:
+                            BorderSide(color: Colors.blueAccent, width: 2),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                         suffixIcon: TextButton(
-                          child: Text('Send OTP'),
+                          child: Text('Send OTP', style: TextStyle(
+                            fontSize: 14, fontFamily: 'BloggerSans',
+                            fontWeight: FontWeight.w800, color: Colors.blueAccent
+                          )),
                           onPressed: () => sendOTP(),
                         ),
                       ),
@@ -207,12 +212,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       decoration: InputDecoration(
                         hintText: 'Verify Code',
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blueAccent),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          borderSide: BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blueAccent, width: 2),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          borderSide:
+                            BorderSide(color: Colors.blueAccent, width: 2),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       ),
                     ),
                     SizedBox(height: 5),
@@ -225,12 +230,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       decoration: const InputDecoration(
                         hintText: 'Password',
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blueAccent),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          borderSide: BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blueAccent, width: 2),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                          borderSide:
+                            BorderSide(color: Colors.blueAccent, width: 2),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -245,10 +250,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Text(
                           'Sign Up',
                           style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'BloggerSans',
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white),
+                            fontSize: 24,
+                            fontFamily: 'BloggerSans',
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white),
                         ),
                       ),
                     ),
@@ -263,7 +268,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     - should contain at least one lower case
     - should contain at least one digit
     - should contain at least one Special character""",
-                style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans'))
+                style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans', color: Colors.grey[800]))
           ],
         ),
       ),

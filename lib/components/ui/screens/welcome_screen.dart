@@ -19,7 +19,8 @@ class WelcomeScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 30,
                     fontFamily: 'BloggerSans',
-                    fontWeight: FontWeight.w800
+                    fontWeight: FontWeight.w800,
+                    color: Colors.grey[800]
                   ),
                   textAlign: TextAlign.center,
                 ),
