@@ -100,7 +100,9 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
                   style: TextStyle(
                     fontSize: 30,
                     fontFamily: 'BloggerSans',
-                    fontWeight: FontWeight.w800),
+                    fontWeight: FontWeight.w800,
+                    color: Colors.grey[800]
+                  ),
                   textAlign: TextAlign.center),
                 SizedBox(height: 10),
                 TextField(
@@ -122,13 +124,15 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
                 Text("""Nickname requirements:
     - a-z, 0-9, and underscore ( _ ) are allowed
     - minimum 4 characters""",
-    style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans')),
+    style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans', color: Colors.grey[800])),
                 SizedBox(height: 10),
                 Text('Enter Name',
                   style: TextStyle(
                     fontSize: 30,
                     fontFamily: 'BloggerSans',
-                    fontWeight: FontWeight.w800),
+                    fontWeight: FontWeight.w800,
+                    color: Colors.grey[800]
+                  ),
                   textAlign: TextAlign.center),
                 SizedBox(height: 10),
                 TextField(

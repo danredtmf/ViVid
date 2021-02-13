@@ -7,11 +7,11 @@ import 'package:vivid/components/auth/auth_services.dart';
 import 'package:vivid/components/ui/screens/edit_name.dart';
 import 'package:vivid/components/ui/screens/edit_nickname.dart';
 import 'package:vivid/components/ui/screens/enter_nickname.dart';
-import 'package:vivid/components/ui/screens/login_screen.dart';
-import 'package:vivid/components/ui/screens/main_screen.dart';
-import 'package:vivid/components/ui/screens/settings_screen.dart';
-import 'package:vivid/components/ui/screens/sign_up_screen.dart';
-import 'package:vivid/components/ui/screens/welcome_screen.dart';
+import 'package:vivid/components/ui/screens/login.dart';
+import 'package:vivid/components/ui/screens/main.dart';
+import 'package:vivid/components/ui/screens/settings.dart';
+import 'package:vivid/components/ui/screens/sign_up.dart';
+import 'package:vivid/components/ui/screens/welcome.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
