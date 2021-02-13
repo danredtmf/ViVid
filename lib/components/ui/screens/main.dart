@@ -52,14 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           FlatButton(
             minWidth: 10,
             onPressed: () {
-              Fluttertoast.showToast(
-                msg: "Doesn't work yet",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.yellow,
-                textColor: Colors.black,
-                fontSize: 18);
+              Navigator.of(context).pushNamed('/search');
             },
             child: Icon(Icons.search, color: Colors.white)),
         ]),

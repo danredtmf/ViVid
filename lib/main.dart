@@ -9,6 +9,7 @@ import 'package:vivid/components/ui/screens/edit_nickname.dart';
 import 'package:vivid/components/ui/screens/enter_nickname.dart';
 import 'package:vivid/components/ui/screens/login.dart';
 import 'package:vivid/components/ui/screens/main.dart';
+import 'package:vivid/components/ui/screens/search.dart';
 import 'package:vivid/components/ui/screens/settings.dart';
 import 'package:vivid/components/ui/screens/sign_up.dart';
 import 'package:vivid/components/ui/screens/welcome.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
           '/login': (BuildContext context) => new LoginScreen(),
           '/enter_nickname': (BuildContext context) => new EnterNicknameScreen(),
           '/main': (BuildContext context) => new MainScreen(),
+          '/search': (BuildContext context) => new SearchScreen(),
           '/settings': (BuildContext context) => new SettingsScreen(),
           '/edit_nickname': (BuildContext context) => new EditNicknameScreen(),
           '/edit_name': (BuildContext context) => new EditNameScreen(),
