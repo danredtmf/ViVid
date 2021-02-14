@@ -60,6 +60,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
     await widget.users
         .doc(firebaseUser.uid)
         .set({
+          'id': firebaseUser.uid,
           'nickname': _nicknameController.text,
           'name': _nameController.text,
         })

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vivid/components/ui/screens/chat.dart';
 import 'package:vivid/components/ui/widgets/card_profile.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   _getNickname() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    currentUserNickname = await prefs.getString('nickname');
+    currentUserNickname = prefs.getString('nickname');
   }
 
   @override
@@ -72,13 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       hintText: "Search"),
                 )),
             ]),
-      ),
-        //actions: [
-        //  FlatButton(
-        //    minWidth: 10,
-        //    onPressed: () {},
-        //    child: Icon(Icons.check, color: Colors.white)),
-        //],
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: users.snapshots(),
@@ -101,33 +95,24 @@ class _SearchScreenState extends State<SearchScreen> {
                 //print(nickname != currentUserNickname);
                 //print(currentUserNickname);
                 //print(_nicknameController.text != '');
-
                 if (nickname.startsWith(_nicknameController.text.toLowerCase()) 
                   && _nicknameController.text != '' && nickname != currentUserNickname) {
-                    return CardProfile(
-                      name: snapshot.data.docs[docIndex]['name'],
-                      nickname: snapshot.data.docs[docIndex]['nickname'],
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Chat(docs: snapshot.data.docs[docIndex])));
+                      },
+                      child: CardProfile(
+                        name: snapshot.data.docs[docIndex]['name'],
+                        nickname: snapshot.data.docs[docIndex]['nickname'],
+                      ),
                     );
                   } else {
                     return Container();
                   }
                 }
             );
-            //return new ListView(
-            //  children: snapshot.data.docs.map((DocumentSnapshot document) {
-            //    String nickname = document.data()['nickname'].toString();
-            //    print(nickname.startsWith(_nicknameController.text));
-            //
-            //    if (nickname.startsWith(_nicknameController.text)){
-            //      return new CardProfile(
-            //        name: document.data()['name'],
-            //        nickname: document.data()['nickname'],
-            //      );
-            //    }
-            //  }).toList(),
-            //);
           }
-          
         }
       ),
     );

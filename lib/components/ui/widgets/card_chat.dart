@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class CardProfile extends StatefulWidget {
-  final String nickname, name;
+class CardChat extends StatefulWidget {
+  final String text, name;
 
-  CardProfile({Key key, this.nickname, this.name});
+  CardChat({Key key, this.text, this.name});
 
   @override
-  _CardProfileState createState() => _CardProfileState();
+  _CardChatState createState() => _CardChatState();
 }
 
-class _CardProfileState extends State<CardProfile> {
+class _CardChatState extends State<CardChat> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,8 +32,8 @@ class _CardProfileState extends State<CardProfile> {
                 Text(widget.name, style: TextStyle(
                   fontSize: 22, fontFamily: 'BloggerSans',
                   fontWeight: FontWeight.w800, color: Colors.grey[800]
-                ),),
-                Text(widget.nickname, style: TextStyle(
+                ), softWrap: false),
+                Text(widget.text, style: TextStyle(
                   fontSize: 16, fontFamily: 'BloggerSans',
                   color: Colors.grey[800] 
                 ),),
