@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditNicknameScreen extends StatefulWidget {
   @override
@@ -13,15 +14,16 @@ class _EditNicknameScreenState extends State<EditNicknameScreen> {
   var user;
 
   _getNickname() async {
-    user = FirebaseAuth.instance.currentUser.uid;
-    await FirebaseFirestore.instance.collection('users').doc(user).get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        _nicknameController.text = documentSnapshot.data()['nickname'].toString();
-      }
-    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String prefsNickname = prefs.getString('nickname');
+
+    print('GetSaveNickname');
+    _nicknameController.text = prefsNickname;
+    
   }
 
   _setNickname() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     int nicknameCounter = 0;
     user = FirebaseAuth.instance.currentUser.uid;
     _nicknameController.text = _nicknameController.text.toLowerCase();
@@ -44,6 +46,7 @@ class _EditNicknameScreenState extends State<EditNicknameScreen> {
       .doc(user).update({'nickname':_nicknameController.text})
       .then((value) { print("User Updated"); })
       .catchError((error) { print("Failed to update user: $error"); });
+      prefs.setString('nickname', _nicknameController.text);
       Navigator.of(context)
       .pushNamedAndRemoveUntil('/main', (route) => false);
     } else if (!nicknameValid) {
@@ -99,6 +102,9 @@ class _EditNicknameScreenState extends State<EditNicknameScreen> {
           children: [
             TextField(
               controller: _nicknameController,
+              keyboardType: TextInputType.visiblePassword,
+              maxLengthEnforced: true,
+              maxLength: 32,
               decoration: InputDecoration(
                 hintText: 'Your Nickname',
                 enabledBorder: OutlineInputBorder(

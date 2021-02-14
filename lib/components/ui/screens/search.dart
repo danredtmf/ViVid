@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vivid/components/ui/widgets/card_profile.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -10,19 +11,22 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _nicknameController = TextEditingController();
+  String currentUserNickname;
+
+  _getNickname() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currentUserNickname = await prefs.getString('nickname');
+  }
 
   @override
   void initState() {
+    _getNickname();
     super.initState();
   }  
 
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
-    var currentUserNickname = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.uid)
-    .get().then((DocumentSnapshot documentSnapshot) => {
-      documentSnapshot.data()['nickname']
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -49,13 +53,18 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: TextField(
                   textAlign: TextAlign.center,
                   controller: _nicknameController,
+                  onTap: () {
+                    _nicknameController.selection = TextSelection.fromPosition(TextPosition(offset: _nicknameController.text.length));
+                  },
                   decoration: InputDecoration(
                       contentPadding:
                         EdgeInsets.symmetric(horizontal: 25),
                       filled: true,
                       fillColor: Colors.white,
                       prefixIcon: GestureDetector(child: Icon(Icons.search, color: Colors.black),
-                      onTap: () { setState(() {});}),
+                      onTap: () {
+                        setState(() {});
+                      }),
                       border: OutlineInputBorder(
                         borderRadius:
                           BorderRadius.all(Radius.circular(15))),
@@ -88,11 +97,13 @@ class _SearchScreenState extends State<SearchScreen> {
               shrinkWrap: true,
               itemBuilder: (context, docIndex) {
                 String nickname = snapshot.data.docs[docIndex]['nickname'];
-                print(_nicknameController.text.toLowerCase());
-                print(nickname.matchAsPrefix(_nicknameController.text.toLowerCase()));
+                //print(nickname.startsWith(_nicknameController.text.toLowerCase()));
+                //print(nickname != currentUserNickname);
+                //print(currentUserNickname);
+                //print(_nicknameController.text != '');
 
-                if (nickname != _nicknameController.text.toLowerCase()) {
-                  if (nickname.matchAsPrefix(_nicknameController.text.toLowerCase()) != null) {
+                if (nickname.startsWith(_nicknameController.text.toLowerCase()) 
+                  && _nicknameController.text != '' && nickname != currentUserNickname) {
                     return CardProfile(
                       name: snapshot.data.docs[docIndex]['name'],
                       nickname: snapshot.data.docs[docIndex]['nickname'],
@@ -101,9 +112,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     return Container();
                   }
                 }
-                
-                
-              },
             );
             //return new ListView(
             //  children: snapshot.data.docs.map((DocumentSnapshot document) {

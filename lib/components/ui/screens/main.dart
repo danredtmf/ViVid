@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -18,14 +19,31 @@ class _MainScreenState extends State<MainScreen> {
   IconData hideDrawerButton = Icons.arrow_drop_down;
 
   _getData(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String prefsNickname = prefs.getString('nickname');
+    String prefsName = prefs.getString('name');
+
     var firebaseUser = _auth.currentUser;
     DocumentSnapshot doc;
 
     try {
-      doc = await widget.users.doc(firebaseUser.uid).get();
-      nickname = doc.data()['nickname'].toString();
-      name = doc.data()['name'].toString();
       setState(() {});
+      doc = await widget.users.doc(firebaseUser.uid).get();
+      if (prefsNickname != doc.data()['nickname'].toString() && prefsName != doc.data()['name'].toString()) {
+        await prefs.setString('nickname', doc.data()['nickname'].toString());
+        await prefs.setString('name', doc.data()['name'].toString());
+
+        nickname = prefs.getString('nickname');
+        name = prefs.getString('name');
+
+        setState(() {});
+      } else {
+        nickname = prefs.getString('nickname');
+        name = prefs.getString('name');
+
+        setState(() {});
+      }
     } on NoSuchMethodError catch(e) {
       print(e);
       Navigator.of(context)

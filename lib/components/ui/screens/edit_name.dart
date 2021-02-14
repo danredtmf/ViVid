@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditNameScreen extends StatefulWidget {
   @override
@@ -12,22 +13,23 @@ class _EditNameScreenState extends State<EditNameScreen> {
   var user;
 
   _getName() async {
-    user = FirebaseAuth.instance.currentUser.uid;
-    await FirebaseFirestore.instance.collection('users').doc(user).get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        _nameController.text = documentSnapshot.data()['name'].toString();
-      }
-    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String prefsName = prefs.getString('name');
+
+    print('GetSaveName');
+      _nameController.text = prefsName;
   }
 
   _setName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     user = FirebaseAuth.instance.currentUser.uid;
     await FirebaseFirestore.instance.collection('users')
-      .doc(user).update({'name':_nameController.text})
-      .then((value) { print("User Updated"); })
-      .catchError((error) { print("Failed to update user: $error"); });
-      Navigator.of(context)
-      .pushNamedAndRemoveUntil('/main', (route) => false);
+    .doc(user).update({'name':_nameController.text})
+    .then((value) { print("User Updated"); })
+    .catchError((error) { print("Failed to update user: $error"); });
+    prefs.setString('name', _nameController.text);
+    Navigator.of(context)
+    .pushNamedAndRemoveUntil('/main', (route) => false);
   }
 
   @override

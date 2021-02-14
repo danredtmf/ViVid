@@ -82,9 +82,7 @@ class _EnterNicknameScreenState extends State<EnterNicknameScreen> {
         actions: [
           FlatButton(
             minWidth: 10,
-            onPressed: () {
-              _checkOrEnterNickname();
-            },
+            onPressed: () => _checkOrEnterNickname(),
             child: Icon(Icons.check)),
         ],
       ),
