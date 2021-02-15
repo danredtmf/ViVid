@@ -14,6 +14,8 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   String groupChatId;
   String userId;
+  
+  String senderName;
 
   TextEditingController textEditingController = TextEditingController();
   ScrollController scrollController = ScrollController();
@@ -29,6 +31,7 @@ class _ChatState extends State<Chat> {
     String anotherUserId;
 
     userId = prefs.getString('id');
+    senderName = prefs.getString('name');
     try {
       anotherUserId = widget.docs['id'];
       if (userId.compareTo(anotherUserId) > 0) {
@@ -43,28 +46,25 @@ class _ChatState extends State<Chat> {
   }
 
   notifyUsers(msg) {
-
     var userSender = FirebaseFirestore.instance.collection('users')
-    .doc(userId).collection('messages').doc(groupChatId);
+    .doc(userId).collection('messages').doc(widget.docs['id']);
 
     var userListener = FirebaseFirestore.instance.collection('users')
-    .doc(widget.docs['id']).collection('messages').doc(groupChatId);
+    .doc(widget.docs['id']).collection('messages').doc(userId);
 
     userSender.set({
-      'last_msg': msg,
-      'id': widget.docs['id'],
       'name': widget.docs['name'],
+      'last_msg': msg,
     })
-    .then((value) => print("User Updated"))
-    .catchError((error) => print("Failed to update user: $error"));
+    .then((value) => print("userSender Notified"))
+    .catchError((error) => print("Failed userSender Notified: $error"));
 
     userListener.set({
+      'name': senderName,
       'last_msg': msg,
-      'id': widget.docs['id'],
-      'name': widget.docs['name'],
     })
-    .then((value) => print("User Updated"))
-    .catchError((error) => print("Failed to update user: $error"));
+    .then((value) => print("userListener Notified"))
+    .catchError((error) => print("Failed userListener Notified: $error"));
 
   }
 

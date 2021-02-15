@@ -99,7 +99,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   && _nicknameController.text != '' && nickname != currentUserNickname) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(context,
+                        Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Chat(docs: snapshot.data.docs[docIndex])));
                       },
                       child: CardProfile(

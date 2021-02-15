@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:vivid/components/ui/widgets/card_chat.dart';
+import 'package:vivid/components/ui/screens/chat.dart';
+import 'package:vivid/components/ui/widgets/card_chat.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -18,6 +19,8 @@ class _MainScreenState extends State<MainScreen> {
   String nickname = '', name = '', id = '';
   bool isHideDrawerButtons = false;
   IconData hideDrawerButton = Icons.arrow_drop_down;
+
+  List<QueryDocumentSnapshot> idChatsMap = List<QueryDocumentSnapshot>();
 
   _getData(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -56,6 +59,23 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  _getDocUser(String id) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach((doc) {
+                  if (doc.id == id) {
+                    idChatsMap.add(doc);
+                  }
+              })
+          });
+    } on NoSuchMethodError catch(e) {
+      print("NoSuchMethodError _getDocUser: "+e.toString());
+    }
+  }
+
   @override
   void initState() {
     _getData(context);
@@ -64,8 +84,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //CollectionReference messages = FirebaseFirestore.instance.collection('users').doc(_auth.currentUser.uid)
-    //.collection('messages');
+    CollectionReference messages = FirebaseFirestore.instance.collection('users').doc(_auth.currentUser.uid)
+    .collection('messages');
 
     return Scaffold(
       appBar: AppBar(
@@ -204,33 +224,39 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
-      //body: StreamBuilder<QuerySnapshot>(
-      //  stream: messages.snapshots(),
-      //  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      //    if (snapshot.hasError) {
-      //      return Center(child: Text('Ошибка!'));
-      //    }
-      //    if (snapshot.connectionState == ConnectionState.waiting) {
-      //      return Center(child: Text('Загрузка...'));
-      //    }
-      //    if (!snapshot.hasData) {
-      //      return Center(child: Text('Пусто'));
-      //    } else {
-      //      return ListView.builder(
-      //        itemCount: snapshot.data.docs.length,
-      //        shrinkWrap: true,
-      //        itemBuilder: (context, index) {
-      //          print(snapshot.data.docs[index].data());
-      //          if (snapshot.data.docs[index]['id'])
-      //          return CardChat(
-      //            name: snapshot.data.docs[index]['name'],
-      //            text: snapshot.data.docs[index]['last_msg'],
-      //          );
-      //        },
-      //      );
-      //    }
-      //  },
-      //),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: messages.snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Ошибка!'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Text('Загрузка...'));
+          }
+          if (!snapshot.hasData) {
+            return Center(child: Text('Пусто'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data.docs.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                _getDocUser(snapshot.data.docs[index].id);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => 
+                    Chat(docs: idChatsMap[index])));
+                  },
+                  child: CardChat(
+                    name: snapshot.data.docs[index]['name'],
+                    text: snapshot.data.docs[index]['last_msg'],
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
     );
   }
 }
