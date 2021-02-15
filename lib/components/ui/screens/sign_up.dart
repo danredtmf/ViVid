@@ -21,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
       .hasMatch(_emailController.text);
     bool passwordValid = RegExp(
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[()!@#\$&*~]).{8,}$')
+      r'^\S{8,}$')
       .hasMatch(_passwordController.text);
     if (emailValid & passwordValid) {
       try {
@@ -263,11 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 10),
             Text("""Password complexity:
-    - minimum 8 characters
-    - should contain at least one upper case
-    - should contain at least one lower case
-    - should contain at least one digit
-    - should contain at least one Special character""",
+    - minimum 8 characters""",
                 style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans', color: Colors.grey[800]))
           ],
         ),

@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   bool isHideDrawerButtons = false;
   IconData hideDrawerButton = Icons.arrow_drop_down;
 
-  List<QueryDocumentSnapshot> idChatsMap = List<QueryDocumentSnapshot>();
+  List<DocumentSnapshot> idChatsList = List<DocumentSnapshot>();
 
   _getData(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -59,17 +59,17 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  _getDocUser(String id) async {
+  _getDocUser(int index, String id) {
     try {
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection('users')
           .get()
-          .then((QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach((doc) {
-                  if (doc.id == id) {
-                    idChatsMap.add(doc);
-                  }
-              })
+          .then((QuerySnapshot querySnapshot) {
+            querySnapshot.docs.forEach((doc) {
+                if (doc.id == id) {
+                  idChatsList.insert(index, doc);
+                }
+            });
           });
     } on NoSuchMethodError catch(e) {
       print("NoSuchMethodError _getDocUser: "+e.toString());
@@ -240,12 +240,12 @@ class _MainScreenState extends State<MainScreen> {
               itemCount: snapshot.data.docs.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                _getDocUser(snapshot.data.docs[index].id);
+                _getDocUser(index, snapshot.data.docs[index].id);
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                     MaterialPageRoute(builder: (context) => 
-                    Chat(docs: idChatsMap[index])));
+                    Chat(docs: idChatsList[index])));
                   },
                   child: CardChat(
                     name: snapshot.data.docs[index]['name'],

@@ -45,7 +45,7 @@ class _ChatState extends State<Chat> {
     }
   }
 
-  notifyUsers(msg) {
+  notifyUsers(String msg) {
     var userSender = FirebaseFirestore.instance.collection('users')
     .doc(userId).collection('messages').doc(widget.docs['id']);
 

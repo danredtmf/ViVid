@@ -56,20 +56,23 @@ class _SearchScreenState extends State<SearchScreen> {
                   onTap: () {
                     _nicknameController.selection = TextSelection.fromPosition(TextPosition(offset: _nicknameController.text.length));
                   },
+                  onChanged: (_) {
+                    setState(() {});
+                  },
                   decoration: InputDecoration(
-                      contentPadding:
-                        EdgeInsets.symmetric(horizontal: 25),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: GestureDetector(child: Icon(Icons.search, color: Colors.black),
-                      onTap: () {
-                        setState(() {});
-                      }),
-                      border: OutlineInputBorder(
-                        borderRadius:
-                          BorderRadius.all(Radius.circular(15))),
-                      hintStyle: new TextStyle(color: Colors.black38),
-                      hintText: "Search"),
+                    contentPadding:
+                      EdgeInsets.symmetric(horizontal: 25),
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: GestureDetector(child: Icon(Icons.search, color: Colors.black),
+                    onTap: () {
+                      
+                    }),
+                    border: OutlineInputBorder(
+                      borderRadius:
+                        BorderRadius.all(Radius.circular(15))),
+                    hintStyle: new TextStyle(color: Colors.black38),
+                    hintText: "Search"),
                 )),
             ]),
         ),
@@ -97,6 +100,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 //print(_nicknameController.text != '');
                 if (nickname.startsWith(_nicknameController.text.toLowerCase()) 
                   && _nicknameController.text != '' && nickname != currentUserNickname) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Chat(docs: snapshot.data.docs[docIndex])));
+                      },
+                      child: CardProfile(
+                        name: snapshot.data.docs[docIndex]['name'],
+                        nickname: snapshot.data.docs[docIndex]['nickname'],
+                      ),
+                    );
+                  } if (_nicknameController.text == '@all') {
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(context,

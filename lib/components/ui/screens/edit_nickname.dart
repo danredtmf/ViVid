@@ -27,7 +27,7 @@ class _EditNicknameScreenState extends State<EditNicknameScreen> {
     int nicknameCounter = 0;
     user = FirebaseAuth.instance.currentUser.uid;
     _nicknameController.text = _nicknameController.text.toLowerCase();
-    bool nicknameValid = RegExp(r'^[a-z0-9_]\w{3,31}').hasMatch(_nicknameController.text);
+    bool nicknameValid = RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9_.]+[a-zA-Z0-9]$').hasMatch(_nicknameController.text);
     
     bool isUnique = await FirebaseFirestore.instance.collection('users')
     .where('nickname', isEqualTo: _nicknameController.text).get()
@@ -120,8 +120,8 @@ class _EditNicknameScreenState extends State<EditNicknameScreen> {
             SizedBox(height: 10),
             Text(
 """Nickname requirements:
-    - a-z, 0-9, and underscore ( _ ) are allowed
-    - minimum 4 characters""",
+    - Requires minimum 3 character
+    - Allowing "_" and "." in middle of name""",
     style: TextStyle(fontSize: 16, fontFamily: 'BloggerSans', color: Colors.grey[800])),
           ],
         ),
