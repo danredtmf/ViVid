@@ -45,11 +45,10 @@ class _SearchScreenState extends State<SearchScreen> {
               onTap: () {
                 Navigator.of(context).pop();
               }),
-              SizedBox(width: 10),
+              SizedBox(width: 15),
               Container(
                 height: 40,
-                width: 300,
-                margin: EdgeInsets.symmetric(horizontal: 20),
+                width: 250,
                 child: TextField(
                   textAlign: TextAlign.center,
                   controller: _nicknameController,
@@ -60,17 +59,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                    contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 25),
                     filled: true,
                     fillColor: Colors.white,
-                    prefixIcon: GestureDetector(child: Icon(Icons.search, color: Colors.black),
-                    onTap: () {
-                      
-                    }),
+                    prefixIcon: Icon(Icons.search, color: Colors.black),
                     border: OutlineInputBorder(
                       borderRadius:
-                        BorderRadius.all(Radius.circular(15))),
+                        BorderRadius.all(Radius.circular(5))),
                     hintStyle: new TextStyle(color: Colors.black38),
                     hintText: "Search"),
                 )),
