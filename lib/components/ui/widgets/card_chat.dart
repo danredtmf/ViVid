@@ -29,14 +29,20 @@ class _CardChatState extends State<CardChat> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(widget.name, style: TextStyle(
-                  fontSize: 22, fontFamily: 'BloggerSans',
-                  fontWeight: FontWeight.w800, color: Colors.grey[800]
-                ), softWrap: false),
-                Text(widget.text, style: TextStyle(
-                  fontSize: 16, fontFamily: 'BloggerSans',
-                  color: Colors.grey[800] 
-                ),),
+                SizedBox(
+                  width: 363,
+                  child: Text(widget.name, style: TextStyle(
+                    fontSize: 22, fontFamily: 'BloggerSans',
+                    fontWeight: FontWeight.w800, color: Colors.grey[800]
+                  ), softWrap: false, overflow: TextOverflow.fade),
+                ),
+                SizedBox(
+                  width: 363,
+                  child: Text(widget.text, style: TextStyle(
+                    fontSize: 16, fontFamily: 'BloggerSans',
+                    color: Colors.grey[800]
+                  ), softWrap: false, overflow: TextOverflow.fade),
+                ),
               ],
             ),
           ],

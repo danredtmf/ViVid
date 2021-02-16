@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vivid/components/ui/widgets/message_form.dart';
+import 'package:vivid/components/ui/widgets/message_wall.dart';
 
 class Chat extends StatefulWidget {
   final docs;
@@ -17,7 +19,6 @@ class _ChatState extends State<Chat> {
   
   String senderName;
 
-  TextEditingController textEditingController = TextEditingController();
   ScrollController scrollController = ScrollController();
 
   @override
@@ -68,16 +69,14 @@ class _ChatState extends State<Chat> {
 
   }
 
-  sendMsg() {
-    String msg = textEditingController.text.trim();
-
+  sendMsg(String msg) async {
     notifyUsers(msg);
 
     if (msg.isNotEmpty) {
       var ref = FirebaseFirestore.instance.collection('messages')
       .doc(groupChatId).collection(groupChatId).doc(DateTime.now().millisecondsSinceEpoch.toString());
 
-      FirebaseFirestore.instance.runTransaction((transaction) async {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
         transaction.set(ref, {
           'senderId': userId,
           'anotherUserId': widget.docs['id'],
@@ -86,31 +85,14 @@ class _ChatState extends State<Chat> {
           'type': 'text',
         });
       });
-
-      textEditingController.clear();
-      scrollController.animateTo(0, duration: Duration(milliseconds: 100), curve: Curves.easeInOut);
     } else {
       print('Enter text!');
     }
   }
 
-  buildItem(doc) {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: 8,
-        left: ((doc['senderId'] == userId) ? 64 : 0),
-        right: ((doc['senderId'] == userId) ? 0 : 64),
-      ),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: ((doc['senderId'] == userId) ? Colors.grey : Colors.greenAccent),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text('${doc['content']}'),
-      ),
-    );
+  void _deleteMessage(String docId) async {
+    await FirebaseFirestore.instance.collection('messages')
+          .doc(groupChatId).collection(groupChatId).doc(docId).delete();
   }
 
   @override
@@ -120,48 +102,58 @@ class _ChatState extends State<Chat> {
         backgroundColor: Colors.blueAccent,
         title: Text('${widget.docs['name']}', softWrap: false),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('messages')
-        .doc(groupChatId).collection(groupChatId)
-        .orderBy('timestamp', descending: true).snapshots(),
-        builder: (context, snapshots) {
-          if (snapshots.hasData && snapshots.data != null) {
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemBuilder: (listContext, index) => buildItem(snapshots.data.docs[index]),
-                    itemCount: snapshots.data.docs.length, reverse: true,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: textEditingController,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: () => sendMsg(),
-                    )
-                  ],
-                ),
-              ],
-            );
-          } else {
-            return Center(
-              child: SizedBox(
-                height: 36,
-                width: 36,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
-                ),
-              ),
-            );
-          }
-        },
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('messages')
+              .doc(groupChatId).collection(groupChatId)
+              .orderBy('timestamp').snapshots(),
+              builder: (context, snapshots) {
+                if (snapshots.hasData) {
+                  if (snapshots.data.docs.isEmpty) {
+                    return Center(child: Text('Пусто... Заполните эту пустоту первым!'));
+                  }
+                  return MessageWall(
+                    messages: snapshots.data.docs,
+                    onDelete: _deleteMessage,
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                //if (snapshots.hasData && snapshots.data != null) {
+                //  return Column(
+                //    children: [
+                //      Expanded(
+                //        child: ListView.builder(
+                //          controller: scrollController,
+                //          itemBuilder: (listContext, index) => buildItem(snapshots.data.docs[index]),
+                //          itemCount: snapshots.data.docs.length, reverse: true,
+                //        ),
+                //      ),
+                //      MessageForm(
+                //        onSubmit: sendMsg,
+                //      ),
+                //    ],
+                //  );
+                //} else {
+                //  return Center(
+                //    child: SizedBox(
+                //      height: 36,
+                //      width: 36,
+                //      child: CircularProgressIndicator(
+                //        valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                //      ),
+                //    ),
+                //  );
+                //}
+              },
+            ),
+          ),
+          MessageForm(onSubmit: sendMsg)
+        ],
       ),
     );
   }
