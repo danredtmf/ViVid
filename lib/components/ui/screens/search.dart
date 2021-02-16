@@ -34,42 +34,47 @@ class _SearchScreenState extends State<SearchScreen> {
         backgroundColor: Colors.blueAccent,
         elevation: 0,
         leading: Container(),
-        flexibleSpace: Container(
-          margin: EdgeInsets.only(top: 35),
-          color: Colors.transparent,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(width: 15),
-              GestureDetector(child: Icon(Icons.arrow_back, color: Colors.white),
-              onTap: () {
-                Navigator.of(context).pop();
-              }),
-              SizedBox(width: 15),
-              Container(
-                height: 40,
-                width: 250,
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  controller: _nicknameController,
-                  onTap: () {
-                    _nicknameController.selection = TextSelection.fromPosition(TextPosition(offset: _nicknameController.text.length));
-                  },
-                  onChanged: (_) {
-                    setState(() {});
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 25),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.search, color: Colors.black),
-                    border: OutlineInputBorder(
-                      borderRadius:
-                        BorderRadius.all(Radius.circular(5))),
-                    hintStyle: new TextStyle(color: Colors.black38),
-                    hintText: "Search"),
-                )),
-            ]),
+        flexibleSpace: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width
+          ),
+          child: Container(
+            margin: EdgeInsets.only(top: 35, right: 5),
+            color: Colors.transparent,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(width: 15),
+                GestureDetector(child: Icon(Icons.arrow_back, color: Colors.white),
+                onTap: () {
+                  Navigator.of(context).pop();
+                }),
+                SizedBox(width: 15),
+                Container(
+                  height: 40,
+                  width: MediaQuery.of(context).size.width - 65,
+                  child: TextField(
+                    textAlign: TextAlign.start,
+                    controller: _nicknameController,
+                    onTap: () {
+                      _nicknameController.selection = TextSelection.fromPosition(TextPosition(offset: _nicknameController.text.length));
+                    },
+                    onChanged: (_) {
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.search, color: Colors.black),
+                      border: OutlineInputBorder(
+                        borderRadius:
+                          BorderRadius.all(Radius.circular(5))),
+                      hintStyle: new TextStyle(color: Colors.black38),
+                      hintText: "Search"),
+                  )),
+              ]),
+          ),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
