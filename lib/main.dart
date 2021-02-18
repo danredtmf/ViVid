@@ -2,8 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:vivid/components/auth/auth_provider.dart';
 import 'package:vivid/components/auth/auth_services.dart';
+import 'package:vivid/components/theme/AppStateNotifier.dart';
+import 'package:vivid/components/theme/AppTheme.dart';
 import 'package:vivid/components/ui/screens/edit_name.dart';
 import 'package:vivid/components/ui/screens/edit_nickname.dart';
 import 'package:vivid/components/ui/screens/enter_nickname.dart';
@@ -22,33 +25,39 @@ Future<void> main() async {
     statusBarColor: Colors.transparent, //black12 // status bar color
     statusBarBrightness: Brightness.dark, //status bar brigtness
     statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
-    systemNavigationBarDividerColor:
-        Colors.greenAccent, //Navigation bar divider color
-    systemNavigationBarIconBrightness: Brightness.light, //navigation bar icon
+    systemNavigationBarDividerColor: Colors.greenAccent, //Navigation bar divider color
+    systemNavigationBarIconBrightness: Brightness.dark, //navigation bar icon
   ));
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider<AppStateNotifier>(
+    create: (context) => AppStateNotifier(),
+    child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Provider(
+    return ProviderAuth(
       auth: AuthService(),
-      child: MaterialApp(
-        title: 'ViVid',
-        debugShowCheckedModeBanner: false,
-        routes: <String, WidgetBuilder>{
-          '/welcome': (BuildContext context) => new WelcomeScreen(),
-          '/sign_up': (BuildContext context) => new SignUpScreen(),
-          '/login': (BuildContext context) => new LoginScreen(),
-          '/enter_nickname': (BuildContext context) => new EnterNicknameScreen(),
-          '/main': (BuildContext context) => new MainScreen(),
-          '/search': (BuildContext context) => new SearchScreen(),
-          '/settings': (BuildContext context) => new SettingsScreen(),
-          '/edit_nickname': (BuildContext context) => new EditNicknameScreen(),
-          '/edit_name': (BuildContext context) => new EditNameScreen(),
-        },
-        home: HomeController(),
+      child: Consumer<AppStateNotifier>(
+        builder: (context, appState, child) => MaterialApp(
+          title: 'ViVid',
+          debugShowCheckedModeBanner: false,
+          //theme: AppTheme.lightTheme,
+          //darkTheme: AppTheme.darkTheme,
+          //themeMode: appState.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
+          routes: <String, WidgetBuilder>{
+            '/welcome': (BuildContext context) => new WelcomeScreen(),
+            '/sign_up': (BuildContext context) => new SignUpScreen(),
+            '/login': (BuildContext context) => new LoginScreen(),
+            '/enter_nickname': (BuildContext context) => new EnterNicknameScreen(),
+            '/main': (BuildContext context) => new MainScreen(),
+            '/search': (BuildContext context) => new SearchScreen(),
+            '/settings': (BuildContext context) => new SettingsScreen(),
+            '/edit_nickname': (BuildContext context) => new EditNicknameScreen(),
+            '/edit_name': (BuildContext context) => new EditNameScreen(),
+          },
+          home: HomeController(),
+        ),
       ),
     );
   }
@@ -59,7 +68,7 @@ class HomeController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = Provider.of(context).auth;
+    final AuthService auth = ProviderAuth.of(context).auth;
 
     return StreamBuilder<User>(
       stream: auth.onAuthStateChanged,

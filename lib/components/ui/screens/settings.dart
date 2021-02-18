@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vivid/components/theme/AppStateNotifier.dart';
 
 class SettingsScreen extends StatefulWidget {
   SettingsScreen({Key key}) : super(key: key);
@@ -14,10 +15,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<AppStateNotifier>(
+      builder: (context, appState, child) => Scaffold(
+        backgroundColor: appState.isDarkModeOn ? Colors.black : Colors.white,
         appBar: AppBar(
           title: Text('Settings'),
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: appState.isDarkModeOn ? Colors.white12 : Colors.blueAccent,
           elevation: 0,
         ),
         body: ListView(
@@ -33,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           fontSize: 22,
                           fontFamily: 'BloggerSans',
                           fontWeight: FontWeight.w800,
-                          color: Colors.grey[800]
+                          color: appState.isDarkModeOn ? Colors.grey : Colors.grey[800],
                         ))),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
@@ -41,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     width: double.infinity,
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color: appState.isDarkModeOn ? Colors.grey[800] : Colors.blueAccent,
                       borderRadius: BorderRadius.circular(15)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -85,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           fontSize: 22,
                           fontFamily: 'BloggerSans',
                           fontWeight: FontWeight.w800,
-                          color: Colors.grey[800]
+                          color: appState.isDarkModeOn ? Colors.grey : Colors.grey[800],
                         ))),
                   Container(
                     margin:
@@ -94,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     width: double.infinity,
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color: appState.isDarkModeOn ? Colors.grey[800] : Colors.blueAccent,
                       borderRadius: BorderRadius.circular(15)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -107,25 +110,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               style: TextStyle(
                                 fontSize: 22,
                                 fontFamily: 'BloggerSans',
+                                fontWeight: FontWeight.w800,
                                 color: Colors.white)),
-                              Switch(
+                              Consumer<AppStateNotifier>(
+                          builder: (context, appState, child) => Switch(
                                 inactiveThumbColor: Colors.white,
                                 activeColor: Colors.white,
-                                value: isDarkMode,
-                                onChanged: (bool newValue) {
-                                  setState(() {
-                                    isDarkMode = newValue;
-                                    Fluttertoast.showToast(
-                                      msg: "Doesn't work yet",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.yellow,
-                                      textColor: Colors.black,
-                                      fontSize: 18);
-                                  });
+                                value: appState.isDarkModeOn,
+                                onChanged: (boolVal) {
+                                  appState.toogleTheme();
                                 },
                               ),
+                            )
                           ],
                         )
                       ],
@@ -137,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         fontSize: 22,
                         fontFamily: 'BloggerSans',
                         fontWeight: FontWeight.w800,
-                        color: Colors.grey[800]
+                        color: appState.isDarkModeOn ? Colors.grey : Colors.grey[800],
                       ))),
                   Container(
                     margin:
@@ -146,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     width: double.infinity,
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color: appState.isDarkModeOn ? Colors.grey[800] : Colors.blueAccent,
                       borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         children: <Widget>[
@@ -184,6 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         )
+      )
     );
   }
 }
